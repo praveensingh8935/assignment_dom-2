@@ -12,6 +12,26 @@
 	<div id="container">
 
 	<!-- Start your code from here -->
+	<main class="box">
+		<form class="form">
+			<div class="info" style="display: flex;">
+				<p style="border: 2px solid blue; border-radius: 5px;margin-left: 3rem;"><label class="label";">Characters:</label><span class="count" style="font-size: 15px ; font-weight: bold;">0</span></p>
+				<p style="border: 2px solid blue; border-radius: 5px;margin-left: 4rem;"><label class="label">Thread:</label><span class="Threadcount" style="font-size: 15px ; font-weight: bold;">0</span></p>
+			</div>
+			<div class="para1" style="position: relative;">
+				<textarea class="textarea" placeholder="The character for each thread is 275" required wrap="soft" onkeyup="textInfo(this);"></textarea>
+				<button type="submit" class="btm">Thread</button>
+			</div>
+		</form>
+		<div class="thread-box">
+			<div class="thread">
+				<span class="sl"> </span><br/>
+				Your thread will be heare <br/><br/>
+				The character limit for each thread is 275. <br/><br/>
+			</div>
+
+		</div>
+	</main>
 
 
 	<!-- End your code -->
@@ -20,8 +40,93 @@
 
 	<script type="text/javascript">
 	// write your javascript code here
+	const dom=(s)=>document.querySelector(s);
+	const form = dom('.form');
+	const charCount = dom('.count');
+	const threadCount = dom('.Threadcount');
+	const threadBox = dom('.thread-box')
 
-	</script>
+	const size = 275;
+	let threadadd = []
+	function textInfo(event){
+		let length = event.value.length;
+		charCount.innerHTML = length;
+		ThreadCount.innerHTML = Math.ceil(length/size);
+		lenght>size ?(event.style.color = 'dodgerblue'):(event.style.color='seagreen');
+	}
+	function displayThread(listParent, arr=[]){
+		listParent.innerHTML=arr.map((el,i)=>{
+			return `
+			<article class='thread' data-index="${i}">
+				<div class="tools">
+				<span class="index">${i<9? '0'+(i+1): i+1}</span>
+				<span class="close" data-index="${i}">X</span>
+					</div>
+				<p class="thread-str">
+					${el}
+					</p>
+				
+				
+				
+				
+				</article>
+	
+					
+			`;
+		}).join("")
+	}
+	function cleanThread(str){
+		let splitOnwhiteSpace=str.split(' ');
+		let result=[];
+		let totalLength=0;
+		let sentence='';
+		for(let i=0;i<splitOnwhiteSpace.length;i++){
+			let curWord=splitOnwhiteSpace[i];
+			let curWordLength = curWord.length;
+			//build the sentence
+			sentence+=curWord+' ';
+			totalLength+=curWordLength+1;
+			if(totalLength>=size){
+				sentence=sentence.trim();
+				let lengthDiff=sentence.length-size; //check if a word needs to be dropped
+				if (lengthDiff>0){
+					let lastIndexofWhiteSpace=sentence.lastIndexOf(' ');
+	sentence=sentence.slice(0, lastIndexofWhiteSpace);
+	i--
+				}
+				result.push(sentence);
+				totalLength=0;
+				sentence='';
+			}
+			if(i==splitOnwhiteSpace.length-1 && totalLength<=size && sentence!==''){
+				result.push(sentence.trim)
+			}
+
+		}
+		return result;
+	}
+	function thread(e){
+		e.preventDefault();
+		const thread=dom('.thread');
+		threadArr=cleanThread(dom('.textarea').value);
+		displayThread(threadBox,threadArr)
+	}
+	// Events
+	form.addEventListener("submit",thread);
+
+	function deleteThread(e){
+		e.preventDefault();
+		const [el, index] = [e.target, e.target.dataset.index];
+		let text=e.target.dataset.para;
+		if(e.classList.contains('close')){
+			threadArr.splice(index, 1);
+			displayThread(threadBox,threadArr);
+		}
+	}
+	threadBox.addEventListener("click",deleteThread);
+	
+	
+		</script>
 
 </body>
 <script>
